@@ -1,0 +1,28 @@
+<idea-plugin>
+    <id>com.gigaspaces.miri</id>
+    <name>Miri</name>
+    <version>0.1.0</version>
+    <vendor email="rnd@gigaspaces.com" url="http://www.gigaspaces.com">GigaSpaces</vendor>
+
+    <description><![CDATA[
+    Miri - GigaSpaces RnD Assistant.<br>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <application-components>
+        <!-- Add your application components here -->
+        <component>
+            <implementation-class>com.gigaspaces.miri.components.RegistrationComponent</implementation-class>
+        </component>
+    </application-components>
+
+    <actions>
+    </actions>
+</idea-plugin>
