@@ -1,0 +1,8 @@
+<config>
+    <repositories>
+        <repository name="xap/xap"/>
+        <repository name="insightedge/insightedge"/>
+        <repository name="gigaspaces/xap-premium"/>
+        <repository name="gigaspaces/xap-dotnet"/>
+    </repositories>
+</config>
