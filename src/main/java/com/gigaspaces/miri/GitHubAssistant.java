@@ -17,10 +17,7 @@ public class GitHubAssistant {
 
     private GitHubAssistant(GitHub gitHub) {
         this.gitHub = gitHub;
-        this.reposNames.add("xap/xap");
-        this.reposNames.add("insightedge/insightedge");
-        this.reposNames.add("gigaspaces/xap-premium");
-        this.reposNames.add("gigaspaces/xap-dotnet");
+        this.reposNames.addAll(MiriUtils.getRepositories());
     }
 
     public static String getOAuthToken() {
