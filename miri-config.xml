@@ -1,4 +1,24 @@
 <config>
+    <menu name="Miri">
+        <action name="Dashboard" url="http://xap-lab1003:3030/mydashboard"/>
+        <action name="Newman" url="https://xap-newman.gspaces.com:8443/elm/"/>
+        <action name="Jenkins" url="http://xap-lab1003.gspaces.com:8080"/>
+        <action name="Trello" url="https://trello.com/b/lUzTlHkx/xap-scrum"/>
+        <menu name="Jira">
+            <action name="InsightEdge" url="https://insightedge.atlassian.net/projects/GS"/>
+            <action name="Docs" url="https://insightedge.atlassian.net/projects/DOC"/>
+        </menu>
+        <menu name="GitHub">
+            <action class="com.gigaspaces.miri.actions.GithubCreateBranchAction"/>
+            <action class="com.gigaspaces.miri.actions.GithubDeleteBranchAction"/>
+            <separator/>
+            <action class="com.gigaspaces.miri.actions.GithubOAuthAction"/>
+        </menu>
+        <menu name="Shortcuts">
+            <action name="GigaSpaces Docs (public)" url="https://docs.gigaspaces.com"/>
+            <action name="GigaSpaces Docs (staging)" url="https://docs-staging.gigaspaces.com"/>
+        </menu>
+    </menu>
     <repositories>
         <repository name="xap/xap"/>
         <repository name="insightedge/insightedge"/>

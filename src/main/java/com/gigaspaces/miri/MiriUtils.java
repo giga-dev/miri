@@ -1,16 +1,16 @@
 package com.gigaspaces.miri;
 
+import com.gigaspaces.miri.actions.BrowseAction;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.ui.Messages;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Desktop;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,6 +41,49 @@ public class MiriUtils {
 
     public static List<String> getRepositories() {
         return loadRepositories(loadXml(CONFIG_URL));
+    }
+
+    public static AnAction getMainMenu() {
+        return getMainMenu(loadXml(CONFIG_URL));
+    }
+
+    public static AnAction getMainMenu(Document xmlDoc) {
+        return parseMenu(findChildByName(xmlDoc.getDocumentElement(), "menu"));
+    }
+
+    public static DefaultActionGroup parseMenu(Node menuNode) {
+        String name = getAttribute(menuNode, "name");
+        DefaultActionGroup menu = new DefaultActionGroup(name, new ArrayList<>());
+        NodeList childNodes = menuNode.getChildNodes();
+        for (int i=0 ; i < childNodes.getLength() ; i++) {
+            Node node = childNodes.item(i);
+            if (node.getNodeName().equals("menu")) {
+                DefaultActionGroup submenu = parseMenu(node);
+                submenu.setPopup(true);
+                menu.add(submenu);
+            } else if (node.getNodeName().equals("action"))
+                menu.add(parseAction(node));
+            else if (node.getNodeName().equals("separator"))
+                menu.addSeparator();
+        }
+        return menu;
+    }
+
+    private static AnAction parseAction(Node actionNode) {
+        String name = getAttribute(actionNode, "name");
+        String url = getAttribute(actionNode, "url");
+        if (url != null)
+            return new BrowseAction(name, url);
+        String className = getAttribute(actionNode, "class");
+        if (className != null) {
+            try {
+                AnAction a;
+                return  (AnAction)Class.forName(className).newInstance();
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                throw new RuntimeException("Failed to create action", e);
+            }
+        }
+        return null;
     }
 
     public static List<String> loadRepositories(Document xmlDoc) {
