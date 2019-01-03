@@ -1,8 +1,8 @@
 <config>
     <menu name="Miri">
         <action name="Dashboard" url="http://xap-lab1003:3030/mydashboard"/>
-        <action name="Newman" url="https://xap-newman.gspaces.com:8443/elm/"/>
         <action name="Jenkins" url="http://xap-lab1003.gspaces.com:8080"/>
+        <action name="Newman" url="https://xap-newman.gspaces.com:8443/elm/"/>
         <action name="Trello" url="https://trello.com/b/lUzTlHkx/xap-scrum"/>
         <menu name="Jira">
             <action name="InsightEdge" url="https://insightedge.atlassian.net/projects/GS"/>
