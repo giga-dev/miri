@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.gigaspaces'
-version '3.0'
+version '4.0'
 
 apply plugin: 'java'
 
