@@ -20,9 +20,11 @@
         </menu>
     </menu>
     <repositories>
-        <repository name="xap/xap"/>
-        <repository name="insightedge/insightedge"/>
-        <repository name="gigaspaces/xap-premium"/>
-        <repository name="gigaspaces/xap-dotnet"/>
+        <repository name="xap/xap" default="true"/>
+        <repository name="insightedge/insightedge" default="true"/>
+        <repository name="gigaspaces/xap-premium" default="true"/>
+        <repository name="gigaspaces/xap-dotnet" default="true"/>
+        <repository name="insightedge/insightedge-examples" default="false"/>
+        <repository name="insightedge/insightedge-zeppelin" default="false"/>
     </repositories>
 </config>
