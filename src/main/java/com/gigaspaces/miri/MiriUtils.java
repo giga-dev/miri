@@ -14,7 +14,8 @@ import java.awt.Desktop;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MiriUtils {
     public static final String TITLE = "Miri";
@@ -39,7 +40,7 @@ public class MiriUtils {
         }
     }
 
-    public static List<String> getRepositories() {
+    public static Map<String, Boolean> getRepositories() {
         return loadRepositories(loadXml(CONFIG_URL));
     }
 
@@ -86,15 +87,15 @@ public class MiriUtils {
         return null;
     }
 
-    public static List<String> loadRepositories(Document xmlDoc) {
-        List<String> result = new ArrayList<>();
+    public static Map<String, Boolean> loadRepositories(Document xmlDoc) {
+        Map<String, Boolean> result = new LinkedHashMap<>();
         Node repositoriesNode = findChildByName(xmlDoc.getDocumentElement(), "repositories");
         if (repositoriesNode != null) {
             NodeList childNodes = repositoriesNode.getChildNodes();
             for (int i=0 ; i < childNodes.getLength() ; i++) {
                 Node node = childNodes.item(i);
                 if (node.getNodeName().equals("repository")) {
-                    result.add(getAttribute(node, "name"));
+                    result.put(getAttribute(node, "name"), getAttributeBoolean(node, "default", true));
                 }
             }
         }
@@ -105,6 +106,12 @@ public class MiriUtils {
         Node attribute = node.getAttributes().getNamedItem(attName);
         return attribute != null ? attribute.getNodeValue() : null;
     }
+
+    public static boolean getAttributeBoolean(Node node, String attName, boolean defaultValue) {
+        String s = getAttribute(node, attName);
+        return s != null && !s.isEmpty() ? Boolean.parseBoolean(s) : defaultValue;
+    }
+
 
     private static Node findChildByName(Element element, String name) {
         NodeList childNodes = element.getChildNodes();

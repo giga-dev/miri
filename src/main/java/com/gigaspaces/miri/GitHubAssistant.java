@@ -6,18 +6,18 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GitHubAssistant {
     private static final String key = "miri.github.token";
     private static GitHubAssistant instance;
     private final GitHub gitHub;
-    private final List<String> reposNames = new ArrayList<>();
+    private final Map<String, Boolean> repos;
 
     private GitHubAssistant(GitHub gitHub) {
         this.gitHub = gitHub;
-        this.reposNames.addAll(MiriUtils.getRepositories());
+        this.repos = new LinkedHashMap<>(MiriUtils.getRepositories());
     }
 
     public static String getOAuthToken() {
@@ -49,8 +49,8 @@ public class GitHubAssistant {
         return gitHub;
     }
 
-    public List<String> getRepos() {
-        return reposNames;
+    public Map<String, Boolean> getRepos() {
+        return repos;
     }
 
     public void deleteBranch(String repository, String name) throws IOException {
