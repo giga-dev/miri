@@ -101,7 +101,6 @@ public class CreateBranchDialog extends MiriCustomDialog {
                     }
                 }
                 if (validationFailures.isEmpty()) {
-                    /*
                     for (CreateAction action : actions) {
                         nextStep("Creating branch " + branchName + " in " + action.repository.getFullName());
                         try {
@@ -110,7 +109,6 @@ public class CreateBranchDialog extends MiriCustomDialog {
                             creationFailures.add(action.repository.getFullName() + ": " + ex.toString());
                         }
                     }
-                    */
                 }
             }
         }, "Creating branch " + branchName, false, project);
