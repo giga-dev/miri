@@ -37,32 +37,51 @@ public class MiriCustomDialog extends DialogWrapper {
     }
 
     protected void addTextField(String caption) {
-        addTextField(caption, "");
+        add(caption, createTextField(caption, ""));
     }
 
     protected void addTextField(String caption, String defaultValue) {
+        add(caption, createTextField(caption, defaultValue));
+    }
+
+    protected JTextField createTextField(String caption, String defaultValue) {
         JTextField textField = new JTextField(defaultValue);
         textFields.put(caption, textField);
-        add(caption, textField);
+        return textField;
     }
 
     protected String getTextFieldValue(String caption) {
         return textFields.get(caption).getText();
     }
 
-
     protected void add(String caption, Component component) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL; //natural height, maximum width
-        c.gridx = 0;
-        c.gridy = currRow++;
-        c.weightx = 0.3;
-        c.ipadx = 8;
-        c.anchor = GridBagConstraints.NORTH;
+        GridBagConstraints c = initRowGridConstraints();
         mainPanel.add(new JLabel(caption + ":"), c);
         c.gridx++;
-        c.weightx = 0.7;
+        //c.weightx = 0.7;
+        c.gridwidth = 2;
         mainPanel.add(component, c);
+    }
+    protected void add(String caption, Component component1, Component component2) {
+        GridBagConstraints c = initRowGridConstraints();
+        mainPanel.add(new JLabel(caption + ":"), c);
+        c.gridx++;
+        //c.weightx = 0.1;
+        mainPanel.add(component1, c);
+        c.gridx++;
+        c.weightx = 0.6;
+        mainPanel.add(component2, c);
+    }
+
+    private GridBagConstraints initRowGridConstraints() {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = currRow++;
+        c.ipadx = 8;
+        c.fill = GridBagConstraints.HORIZONTAL; //natural height, maximum width
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 0.2;
+        return c;
     }
 
     protected String getRequiredTextField(String caption) {

@@ -5,7 +5,12 @@ import com.gigaspaces.miri.MiriUtils;
 import com.gigaspaces.miri.actions.FixedStepsProgressTask;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.Messages;
+import org.kohsuke.github.GHBranch;
+import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHTagObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,12 +22,14 @@ import java.util.Map;
 public class CreateBranchDialog extends MiriCustomDialog {
 
     private final String NEW_BRANCH_CAPTION = "New branch name";
-    private final String BASE_BRANCH_CAPTION = "Base branch";
+    private final String BRANCH_FROM_CAPTION = "Branch from";
 
     private final GitHubAssistant assistant;
     private final Project project;
     private final JPanel repositoriesPanel = new JPanel();
+    private final ComboBox<ShaType> shaTypeComboBox = new ComboBox<>(ShaType.values());
 
+    private enum ShaType {branch, tag, commit};
 
     public CreateBranchDialog(GitHubAssistant assistant, Project project) {
         super();
@@ -37,7 +44,7 @@ public class CreateBranchDialog extends MiriCustomDialog {
         }
 
         addTextField(NEW_BRANCH_CAPTION);
-        addTextField(BASE_BRANCH_CAPTION, "master");
+        add(BRANCH_FROM_CAPTION, shaTypeComboBox, createTextField(BRANCH_FROM_CAPTION, "master"));
         add("Repositories", repositoriesPanel);
 
         init();
@@ -61,8 +68,8 @@ public class CreateBranchDialog extends MiriCustomDialog {
         if (branchName == null) {
             return false;
         }
-        final String baseBranch = getRequiredTextField(BASE_BRANCH_CAPTION);
-        if (baseBranch == null) {
+        final String branchFrom = getRequiredTextField(BRANCH_FROM_CAPTION);
+        if (branchFrom == null) {
             return false;
         }
         final List<String> selectedRepos = getSelectedRepositories();
@@ -71,24 +78,82 @@ public class CreateBranchDialog extends MiriCustomDialog {
             return false;
         }
 
-        ProgressManager.getInstance().runProcessWithProgressSynchronously(new FixedStepsProgressTask(selectedRepos.size() + 1) {
+        ShaType shaType = (ShaType) shaTypeComboBox.getSelectedItem();
+
+        List<CreateAction> actions = new ArrayList<>();
+        List<String> validationFailures = new ArrayList<>();
+        List<String> creationFailures = new ArrayList<>();
+        ProgressManager.getInstance().runProcessWithProgressSynchronously(new FixedStepsProgressTask(selectedRepos.size() * 2 + 1) {
             @Override
             protected void execute() {
                 for (String repoName : selectedRepos) {
+                    nextStep("Locating " + shaType + " " + branchFrom + " in " + repoName);
                     try {
-                        nextStep("Creating branch " + branchName + " in " + repoName);
-                        assistant.createBranch(repoName, branchName, baseBranch);
+                        GHRepository repository = assistant.getGitHub().getRepository(repoName);
+                        String sha = getSha(shaType, branchFrom, repository);
+                        if (sha == null) {
+                            validationFailures.add(repoName + ": no such " + shaType + " " + branchFrom);
+                        } else {
+                            actions.add(new CreateAction(repository, sha));
+                        }
                     } catch (IOException ex) {
-                        String errorMessage = "Failed to create branch " + branchName + " on repo " + repoName + System.lineSeparator() + ex.toString();
-                        Messages.showErrorDialog(errorMessage, MiriUtils.TITLE);
+                        validationFailures.add(repoName + ": " + ex.toString());
                     }
                 }
+                if (validationFailures.isEmpty()) {
+                    /*
+                    for (CreateAction action : actions) {
+                        nextStep("Creating branch " + branchName + " in " + action.repository.getFullName());
+                        try {
+                            assistant.createBranchFromSha(action.repository, branchName, action.sha);
+                        } catch (IOException ex) {
+                            creationFailures.add(action.repository.getFullName() + ": " + ex.toString());
+                        }
+                    }
+                    */
+                }
             }
-
         }, "Creating branch " + branchName, false, project);
 
-        Messages.showInfoMessage("Created branch " + branchName, MiriUtils.TITLE);
+        boolean executed;
+        if (!creationFailures.isEmpty()) {
+            Messages.showErrorDialog("Failed to create branch " + branchName + " on the following repositories: " + System.lineSeparator() +
+                    String.join(System.lineSeparator(), creationFailures), MiriUtils.TITLE);
+            executed = true;
+        } else if (!validationFailures.isEmpty()) {
+            Messages.showWarningDialog("Validation failed: " + System.lineSeparator() +
+                    String.join(System.lineSeparator(), validationFailures), MiriUtils.TITLE);
+            executed = false;
+        } else {
+            Messages.showInfoMessage("Created branch " + branchName, MiriUtils.TITLE);
+            executed = true;
+        }
+        return executed;
+    }
 
-        return super.executeOKAction();
+    private String getSha(ShaType shaType, String text, GHRepository repository) throws IOException {
+        switch (shaType) {
+            case branch:
+                GHBranch branch = assistant.getBranchIfExists(repository, text);
+                return branch != null ? branch.getSHA1() : null;
+            case tag:
+                GHTagObject tag = assistant.getTagIfExists(repository, text);
+                return tag != null ? tag.getObject().getSha() : null;
+            case commit:
+                GHCommit commit = assistant.getCommitIfExists(repository, text);
+                return commit != null ? commit.getSHA1() : null;
+            default:
+                throw new IllegalStateException("Unsupported sha type: " + shaType);
+        }
+    }
+
+    private static class CreateAction {
+        private final GHRepository repository;
+        private final String sha;
+
+        private CreateAction(GHRepository repository, String sha) {
+            this.repository = repository;
+            this.sha = sha;
+        }
     }
 }

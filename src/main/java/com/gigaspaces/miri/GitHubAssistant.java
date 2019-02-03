@@ -1,9 +1,7 @@
 package com.gigaspaces.miri;
 
 import com.intellij.ide.util.PropertiesComponent;
-import org.kohsuke.github.GHRef;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
+import org.kohsuke.github.*;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -57,16 +55,36 @@ public class GitHubAssistant {
         deleteBranch(gitHub.getRepository(repository), name);
     }
 
-    public void deleteBranch(GHRepository repository, String name) throws IOException {
+    private void deleteBranch(GHRepository repository, String name) throws IOException {
         repository.getRef("heads/" +name).delete();
     }
 
-    public GHRef createBranch(String repository, String name, String baseBranch) throws IOException {
-        return createBranch(gitHub.getRepository(repository), name, baseBranch);
-
+    public GHBranch getBranchIfExists(GHRepository repository, String name) throws IOException {
+        try {
+            return repository.getBranch(name);
+        } catch (GHFileNotFoundException e) {
+            return null;
+        }
     }
 
-    public GHRef createBranch(GHRepository repository, String name, String baseBranch) throws IOException {
-        return repository.createRef("refs/heads/" +name, repository.getBranch(baseBranch).getSHA1());
+    public GHTagObject getTagIfExists(GHRepository repository, String name) throws IOException {
+        try {
+            GHRef ref = repository.getRef("tags/" + name);
+            return repository.getTagObject(ref.getObject().getSha());
+        } catch (GHFileNotFoundException e) {
+            return null;
+        }
+    }
+
+    public GHCommit getCommitIfExists(GHRepository repository, String sha) throws IOException {
+        try {
+            return repository.getCommit(sha);
+        } catch (GHFileNotFoundException e) {
+            return null;
+        }
+    }
+
+    public GHRef createBranchFromSha(GHRepository repository, String name, String sha) throws IOException {
+        return repository.createRef("refs/heads/" + name, sha);
     }
 }
