@@ -19,11 +19,11 @@ dependencies {
 }
 
 intellij {
-    version '2019.1'
+    version '2019.3'
 }
 patchPluginXml {
     //sinceBuild '181.*'
-    untilBuild '191.*'
+    untilBuild '193.*'
     changeNotes """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
