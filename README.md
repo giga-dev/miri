@@ -16,4 +16,4 @@ The build creates a zip file under `build/distributions`.
 
 ## Installing the plugin
 
-To install the plugin, simply unzip it in the `plugins` folder under IntelliJ (e.g. `IntelliJ IDEA Community Edition 2018.1.1/plugins/miri`), and restart IntelliJ.
+To install the plugin, simply unzip it in the `plugins` folder under IntelliJ (e.g. `IntelliJ IDEA Community Edition 2018.1.1/plugins/miri` or `.IdeaIC2019.3/config/plugins`), and restart IntelliJ.
