@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.gigaspaces'
-version '8.0'
+version '9.0'
 
 apply plugin: 'java'
 
@@ -19,11 +19,11 @@ dependencies {
 }
 
 intellij {
-    version '2019.3'
+    version '2020.1'
 }
 patchPluginXml {
-    //sinceBuild '181.*'
-    untilBuild '193.*'
+    sinceBuild '181.*'
+    untilBuild '204.*'
     changeNotes """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
