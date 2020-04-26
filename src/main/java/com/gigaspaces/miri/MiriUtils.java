@@ -55,17 +55,25 @@ public class MiriUtils {
     public static DefaultActionGroup parseMenu(Node menuNode) {
         String name = getAttribute(menuNode, "name");
         DefaultActionGroup menu = new DefaultActionGroup(name, new ArrayList<>());
-        NodeList childNodes = menuNode.getChildNodes();
-        for (int i=0 ; i < childNodes.getLength() ; i++) {
-            Node node = childNodes.item(i);
-            if (node.getNodeName().equals("menu")) {
-                DefaultActionGroup submenu = parseMenu(node);
-                submenu.setPopup(true);
-                menu.add(submenu);
-            } else if (node.getNodeName().equals("action"))
-                menu.add(parseAction(node));
-            else if (node.getNodeName().equals("separator"))
-                menu.addSeparator();
+        if (name.equals("GitHub")) {
+            menu.add(new com.gigaspaces.miri.actions.GithubCreateBranchAction());
+            menu.add(new com.gigaspaces.miri.actions.GithubDeleteBranchAction());
+            menu.add(new com.gigaspaces.miri.actions.GithubDeleteBranchesAction());
+            menu.addSeparator();
+            menu.add(new com.gigaspaces.miri.actions.GithubOAuthAction());
+        } else {
+            NodeList childNodes = menuNode.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node node = childNodes.item(i);
+                if (node.getNodeName().equals("menu")) {
+                    DefaultActionGroup submenu = parseMenu(node);
+                    submenu.setPopup(true);
+                    menu.add(submenu);
+                } else if (node.getNodeName().equals("action"))
+                    menu.add(parseAction(node));
+                else if (node.getNodeName().equals("separator"))
+                    menu.addSeparator();
+            }
         }
         return menu;
     }

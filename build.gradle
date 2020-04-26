@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.gigaspaces'
-version '9.0'
+version '10.0'
 
 apply plugin: 'java'
 
@@ -25,6 +25,8 @@ patchPluginXml {
     sinceBuild '181.*'
     untilBuild '204.*'
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      <b>10.0</b><br>
+      <ul>
+      <li>Added action to delete multiple branches from github</li>
+      </ul>"""
 }

@@ -8,6 +8,7 @@
             <action name="InsightEdge" url="https://insightedge.atlassian.net/projects/GS"/>
             <action name="Docs" url="https://insightedge.atlassian.net/projects/DOC"/>
         </menu>
+        <!-- The GitHub section is ignored starting v10 (loaded via code to avoid backwards issues) -->
         <menu name="GitHub">
             <action class="com.gigaspaces.miri.actions.GithubCreateBranchAction"/>
             <action class="com.gigaspaces.miri.actions.GithubDeleteBranchAction"/>

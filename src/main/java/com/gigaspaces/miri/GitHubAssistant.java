@@ -4,8 +4,10 @@ import com.intellij.ide.util.PropertiesComponent;
 import org.kohsuke.github.*;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class GitHubAssistant {
     private static final String key = "miri.github.token";
@@ -66,6 +68,15 @@ public class GitHubAssistant {
             return null;
         }
     }
+
+    public Collection<String> listBranches(String repository) throws IOException {
+        return listBranches(gitHub.getRepository(repository));
+    }
+
+    public Collection<String> listBranches(GHRepository repository) throws IOException {
+        return repository.getBranches().keySet();
+    }
+
 
     public GHTagObject getTagIfExists(GHRepository repository, String name) throws IOException {
         try {

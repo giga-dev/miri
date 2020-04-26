@@ -1,26 +1,17 @@
 package com.gigaspaces.miri.actions;
 
 import com.gigaspaces.miri.GitHubAssistant;
-import com.gigaspaces.miri.MiriUtils;
 import com.gigaspaces.miri.dialogs.DeleteBranchDialog;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 
-public class GithubDeleteBranchAction extends AnAction {
+public class GithubDeleteBranchAction extends GithubAction {
     public GithubDeleteBranchAction() {
         super("Delete Branch...");
     }
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
-        GitHubAssistant assistant = GitHubAssistant.instance();
-        if (assistant == null) {
-            Messages.showWarningDialog("Cannot connect to GitHub - please setup an OAuth token", MiriUtils.TITLE);
-            return;
-        }
-
-        DeleteBranchDialog dialog = new DeleteBranchDialog(assistant, e.getProject());
-        dialog.show();
+    protected DialogWrapper createDialog(GitHubAssistant assistant, Project project) {
+        return new DeleteBranchDialog(assistant, project);
     }
 }
