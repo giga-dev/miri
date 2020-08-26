@@ -3,9 +3,10 @@ plugins {
 }
 
 group 'com.gigaspaces'
-version '10.0'
+version '11.0'
 
 apply plugin: 'java'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
@@ -15,18 +16,20 @@ repositories {
 
 dependencies {
     compile group: 'org.kohsuke', name: 'github-api', version: '1.95'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 intellij {
     version '2020.2'
+    plugins 'git4idea'
 }
 patchPluginXml {
     sinceBuild '181.*'
     untilBuild '204.*'
     changeNotes """
-      <b>10.0</b><br>
+      <b>11.0</b><br>
       <ul>
-      <li>Added action to delete multiple branches from github</li>
+      <li>Added action to create continuous build in Jenkins</li>
       </ul>"""
 }

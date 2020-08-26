@@ -1,7 +1,13 @@
 <config>
     <menu name="Miri">
         <action name="Dashboard" url="http://xap-lab1003:3030/mydashboard"/>
-        <action name="Jenkins" url="http://xap-lab1003.gspaces.com:8080"/>
+        <menu name="Jenkins">
+            <action class="com.gigaspaces.miri.actions.JenkinsCreateBuildAction"/>
+            <action name="Browse Jenkins" url="http://groot.gspaces.com:8080"/>
+            <action name="Old Jenkins (for patches)" url="http://xap-lab1003.gspaces.com:8080"/>
+            <separator/>
+            <action class="com.gigaspaces.miri.actions.JenkinsAuthAction"/>
+        </menu>
         <action name="Newman" url="https://xap-newman.gspaces.com:8443/elm/"/>
         <action name="Trello" url="https://trello.com/b/lUzTlHkx/xap-scrum"/>
         <menu name="Jira">
