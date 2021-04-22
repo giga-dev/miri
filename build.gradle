@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.gigaspaces'
-version '11.0'
+version '12.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -25,9 +25,14 @@ intellij {
     plugins 'git4idea'
 }
 patchPluginXml {
-    sinceBuild '181.*'
-    untilBuild '204.*'
+    // See: https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html#intellij-platform-based-products-of-recent-ide-versions
+    sinceBuild '181.*' // 2018.1
+    untilBuild '214.*' // 2021.4
     changeNotes """
+      <b>12.0</b><br>
+      <ul>
+      <li>Added Support for IntelliJ 2021.*</li>
+      </ul>
       <b>11.0</b><br>
       <ul>
       <li>Added action to create continuous build in Jenkins</li>
